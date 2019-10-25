@@ -1,6 +1,6 @@
 # Встановлення та використання
 
-Простий вебсокет сервер, котрий базується на swoole та має RTC http api.
+Простий вебсокет сервер, котрий базується на swoole та має RTC HTTP API.
 
 #### Запускаємо контейнер.
 
@@ -18,7 +18,8 @@ services:
             - "9090:8080"
 ```
 
-Базовя налаштування відбуваєтьсе через задання наступних змінних оточення:
+Базове налаштування відбувається через задання наступних змінних оточення:
+
 * HTTP_HOST=0.0.0.0
 * HTTP_PORT=8080
 * HTTP_TOKEN=
@@ -26,12 +27,12 @@ services:
 * WS_HOST=0.0.0.0
 * WS_PORT=80
 
-Якщо задати `HTTP_TOKEN` то для використання http api необхідоно буде аторизуватися через додання до запиту `<HTTP_TOKEN>=<HTTP_PARAM>`
+Якщо задати `HTTP_TOKEN` то для використання HTTP API необхідоно буде аторизуватися через додання до запиту наступних `GET` параметрів `<HTTP_TOKEN>=<HTTP_PARAM>`
 
 Для змінних оточення
 
-HTTP_PARAM=hash
-HTTP_TOKEN=12345
+* HTTP_PARAM=hash
+* HTTP_TOKEN=12345
 
 Запит буде наступним
 ```http request
@@ -89,7 +90,7 @@ http://127.0.0.1:9090/?action=stats&hash=12345
 
 #### Надсилання повідомлень
 
-Надіслати повідомлення в визначений канал. Його отримають всі підписники.
+Надіслати повідомлення до визначеного каналу. Його отримають всі підписники.
 
 ```http request
 http://127.0.0.1:9090/?action=push&to=channel&channel=channel&message=Повідомлення+для+слухачів+каналу+channel
@@ -112,7 +113,7 @@ http://127.0.0.1:9090/?action=push&to=channel&channel=channel&message=Повід
 Надіслати повідомлення визначеному з'єднанню
 
 ```http request
-http://127.0.0.1:9090/?action=push&to=connection&connection=9&message=Повідомлення+для+слухачів+каналу+channel
+http://127.0.0.1:9090/?action=push&to=connection&connection=9&message=Повідомлення+для+з'єднання+9
 ```
 
 Відповідь
@@ -124,14 +125,16 @@ http://127.0.0.1:9090/?action=push&to=connection&connection=9&message=Повід
         "action": "push",
         "to": "connection",
         "connection": "9",
-        "message": "Повідомлення для слухачів каналу channel"
+        "message": "Повідомлення для з'єднання 9"
     }
 }
 ```
 
-#### Отримання всіх каналів котрі на котрі хтось підписаний
+#### Отримання всіх каналів на котрі хтось підписаний
 
-`http://127.0.0.1:9090/?action=getChannels`
+```http request
+http://127.0.0.1:9090/?action=getChannels
+```
 
 Відповідь, буде містити всі канали, та всі активні підключення по кожному з них
 
@@ -143,6 +146,9 @@ http://127.0.0.1:9090/?action=push&to=connection&connection=9&message=Повід
             "channel": [
                 9,
                 13
+            ],
+            "channel2": [
+                23
             ]
         }
     },
@@ -172,9 +178,8 @@ http://127.0.0.1:9090/?action=getConnections
     "response": {
         "connections": [
             9,
-            10,
-            16,
-            13
+            13,
+            23
         ]
     },
     "request": {
@@ -183,7 +188,7 @@ http://127.0.0.1:9090/?action=getConnections
 }
 ```
 
-Якщо бажаєте всі з'єднання по визначеному каналу - використовуйте параметр `channel`
+Якщо бажаєте отримати всі з'єднання по визначеному каналу - використовуйте параметр `channel`
 
 ```http request
 http://127.0.0.1:9090/?action=getConnections&channel=channel
@@ -259,7 +264,6 @@ http://127.0.0.1:9090/?action=stats
 {
     "status": true,
     "response": {
-        "status": true,
         "channels": [
             "channel"
         ],
@@ -272,7 +276,7 @@ http://127.0.0.1:9090/?action=stats
             "num_entries": 1,
             "expunges": 0,
             "start_time": 1571918020,
-            "mem_size": 184,
+            "mem_size": 348,
             "memory_type": "mmap",
             "cache_list": [
                 {
@@ -285,6 +289,17 @@ http://127.0.0.1:9090/?action=stats
                     "access_time": 1571918020,
                     "ref_count": 0,
                     "mem_size": 184
+                },
+                {
+                    "info": "channel2",
+                    "ttl": 0,
+                    "num_hits": 0,
+                    "mtime": 1571918135,
+                    "creation_time": 1571918135,
+                    "deletion_time": 0,
+                    "access_time": 1571918135,
+                    "ref_count": 0,
+                    "mem_size": 164
                 }
             ],
             "deleted_list": [],
