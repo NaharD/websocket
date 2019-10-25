@@ -82,7 +82,6 @@
                         switch ($action) {
                             case 'stats':
                                 $this->responseTrue($response, $request, [
-                                    'status' => true,
                                     'channels' => $this->getChannels(),
                                     'cache_info' => $this->getCacheInfo(),
                                     'ws_server' => $this->ws->stats(),
