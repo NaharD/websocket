@@ -71,7 +71,7 @@
 
                 $tokenRequest = @$request->get[$tokenParam];
 
-                if ($token ?? $token !== $tokenRequest) {
+                if ($token && $token !== $tokenRequest) {
                     $this->responseFalse($response, $request, 'access deny');
                 } else {
                     $action = @$request->get['action'];
